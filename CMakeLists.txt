@@ -8,4 +8,7 @@ project(LunaPaak C CXX)
 
 add_definitions(-DLUA_COMPAT_MODULE)
 add_subdirectory (lib EXCLUDE_FROM_ALL)
+
+enable_testing()
+
 add_subdirectory (src)

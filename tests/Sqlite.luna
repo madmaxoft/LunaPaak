@@ -1,0 +1,27 @@
+print("test start")
+local sqlite = require("sqlite3")
+
+local db = assert(sqlite.open("test.sqlite3"))
+local err = db:exec([[CREATE TABLE IF NOT EXISTS test (
+	key TEXT,
+	value TEXT
+)]])
+if (err ~= sqlite.OK) then
+	error("Failed to create DB table test: " .. db:errmsg())
+end
+print("DB table created")
+
+local stmt, err = db:prepare("INSERT INTO test(key, value) VALUES (?, ?)")
+if not(stmt) then
+	error("Failed to prepare statement: " .. db:errmsg())
+end
+print("stmt created")
+
+stmt:bind_values("example", "value")
+stmt:step()
+stmt:finalize()
+print("Values have been stored")
+
+db:close()
+
+print("test completed")
