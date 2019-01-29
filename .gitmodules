@@ -1,0 +1,18 @@
+[submodule "lib/lua"]
+	path = lib/lua
+	url = https://github.com/madmaxoft/lua
+[submodule "lib/luafilesystem"]
+	path = lib/luafilesystem
+	url = https://github.com/madmaxoft/luafilesystem
+[submodule "lib/zlib"]
+	path = lib/zlib
+	url = https://github.com/madmaxoft/zlib
+[submodule "lib/lzlib"]
+	path = lib/lzlib
+	url = https://github.com/madmaxoft/lzlib
+[submodule "lib/luasocket"]
+	path = lib/luasocket
+	url = https://github.com/madmaxoft/luasocket
+[submodule "lib/lsqlite3"]
+	path = lib/lsqlite3
+	url = https://github.com/madmaxoft/lsqlite3
