@@ -1,4 +1,5 @@
 local fnam = lunapaak.ui.getopenfilename{filter = "text files\0*.txt\0"}
+local fnams = lunapaak.ui.getsavefilename{filter = "text files\0*.txt\0"}
 local shouldCont = lunapaak.ui.msgbox("Test question", "Do you want to continue?", {buttons = "yesno", icon = "question"})
 if (shouldCont == lunapaak.ui.YES) then
 	lunapaak.ui.msgbox("Test", "This is a test messagebox, you chose file " .. (fnam or "<none>"))

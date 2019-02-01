@@ -178,6 +178,51 @@ extern "C" int lunapaak_ui_getopenfilename(lua_State * L)
 
 
 
+// lunapaak.ui.getsavefilename() function implementation
+extern "C" int lunapaak_ui_getsavefilename(lua_State * L)
+{
+	if (!lua_istable(L, 1))
+	{
+		lua_pushstring(L, "Expected a string as the first param");
+		return lua_error(L);
+	}
+
+	auto title = lua_getstringfield(L, 1, "title");
+	auto filter = lua_getstringfield(L, 1, "filter");
+	auto filename = lua_getstringfield(L, 1, "filename");
+	auto initialdir = lua_getstringfield(L, 1, "initialdir");
+
+	OPENFILENAMEA ofn;
+	char buf[MAX_PATH * 4];
+	strncpy(buf, filename.c_str(), ARRAYCOUNT(buf));
+	memset(&ofn, 0, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.lpstrTitle = title.c_str();
+	ofn.lpstrFilter = filter.c_str();
+	ofn.lpstrFile = buf;
+	ofn.lpstrInitialDir = initialdir.empty() ? nullptr : initialdir.c_str();
+	ofn.nMaxFile = ARRAYCOUNT(buf);
+	ofn.Flags = OFN_ENABLESIZING;
+	if (!GetSaveFileNameA(&ofn))
+	{
+		if (GetLastError() > 0)
+		{
+			// An error - return a nil and number description
+			lua_pushnil(L);
+			lua_pushinteger(L, GetLastError());
+			return 2;
+		}
+		// User cancelled, return nothing
+		return 0;
+	}
+	lua_pushstring(L, ofn.lpstrFile);
+	return 1;
+}
+
+
+
+
+
 /*
 extern "C" int lunapaak_error(lua_State * L)
 {
@@ -198,6 +243,8 @@ void createUiTable(lua_State * L)
 	lua_setfield(L, -2, "msgbox");
 	lua_pushcfunction(L, lunapaak_ui_getopenfilename);
 	lua_setfield(L, -2, "getopenfilename");
+	lua_pushcfunction(L, lunapaak_ui_getsavefilename);
+	lua_setfield(L, -2, "getsavefilename");
 	lua_pushinteger(L, IDOK);
 	lua_setfield(L, -2, "OK");
 	lua_pushinteger(L, IDYES);
