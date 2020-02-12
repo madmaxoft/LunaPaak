@@ -1,0 +1,12 @@
+-- Args.luna
+-- Prints all args given to the script
+
+if not(arg) then
+	error("No \"arg\" value.")
+end
+
+print("Listing all arguments in the \"arg\" table:")
+for idx, a in ipairs(arg) do
+	print(idx, ":\t", a)
+end
+print("Done")

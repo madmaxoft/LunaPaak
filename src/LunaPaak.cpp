@@ -384,19 +384,16 @@ int main(int argc, char * argv[])
 
 	// Execute the script file with appropriate args:
 	lua_pushcfunction(L, errorHandler);
+	auto status = luaL_loadfile(L, argv[1]);
+	if (status != LUA_OK)
+	{
+		errorHandler(L);
+	}
 	for (int i = 2; i < argc; ++i)
 	{
 		lua_pushstring(L, argv[i]);
 	}
-	auto status = luaL_loadfile(L, argv[1]);
-	if (status == LUA_OK)
-	{
-		lua_pcall(L, argc - 2, LUA_MULTRET, 1);
-	}
-	else
-	{
-		errorHandler(L);
-	}
+	lua_pcall(L, argc - 2, LUA_MULTRET, 1);
 	return 0;
 }
 
