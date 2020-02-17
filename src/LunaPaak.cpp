@@ -1,6 +1,8 @@
-#include <Windows.h>
 #include <iostream>
 #include <sstream>
+#include <Windows.h>
+#include <ShlObj.h>
+#include "RegistryKey.h"
 extern "C"
 {
 	#include <zlib.h>
@@ -137,7 +139,7 @@ extern "C" int lunapaak_ui_getopenfilename(lua_State * L)
 {
 	if (!lua_istable(L, 1))
 	{
-		lua_pushstring(L, "Expected a string as the first param");
+		lua_pushstring(L, "Expected a table as the first param");
 		return lua_error(L);
 	}
 
@@ -183,7 +185,7 @@ extern "C" int lunapaak_ui_getsavefilename(lua_State * L)
 {
 	if (!lua_istable(L, 1))
 	{
-		lua_pushstring(L, "Expected a string as the first param");
+		lua_pushstring(L, "Expected a table as the first param");
 		return lua_error(L);
 	}
 
@@ -236,7 +238,7 @@ extern "C" int lunapaak_error(lua_State * L)
 
 
 /** Creates the "lunapak.ui" table of functions on top of the stack. */
-void createUiTable(lua_State * L)
+static void createUiTable(lua_State * L)
 {
 	lua_newtable(L);
 	lua_pushcfunction(L, lunapaak_ui_msgbox);
@@ -288,7 +290,7 @@ extern "C" int luaopen_lunapaak(lua_State * L)
 
 
 /** Dumps the contents of the Lua stack to the specified ostream. */
-void dumpLuaStack(lua_State * L, std::ostream & aDest)
+static void dumpLuaStack(lua_State * L, std::ostream & aDest)
 {
 	aDest << "Lua stack contents:" << std::endl;
 	for (int i = lua_gettop(L); i >= 0; --i)
@@ -305,7 +307,7 @@ void dumpLuaStack(lua_State * L, std::ostream & aDest)
 
 
 /** Dumps the call stack to the specified ostream. */
-void dumpLuaTraceback(lua_State * L, std::ostream & aDest)
+static void dumpLuaTraceback(lua_State * L, std::ostream & aDest)
 {
 	luaL_traceback(L, L, "Stack trace: ", 0);
 	aDest << lua_getstring(L, -1).c_str() << std::endl;
@@ -318,7 +320,7 @@ void dumpLuaTraceback(lua_State * L, std::ostream & aDest)
 
 
 /** Reports the error message, and the stack trace, to a UI window. */
-void reportError(lua_State * L, const std::string & aErrorMsg)
+static void reportError(lua_State * L, const std::string & aErrorMsg)
 {
 	std::stringstream ss;
 	ss << "Caught an error in the script:\n";
@@ -349,12 +351,119 @@ extern "C" int errorHandler(lua_State * L)
 
 
 
+/** Sets the old-style association of .luna files to execute aCommand.
+Old-style is used by Windows up to Win7, where programs can change the association directly. */
+static void setInterpreterOldStyleAssociation(const std::wstring & aCommand)
+{
+	try
+	{
+		// Set up the association in the pre-win8 way:
+		RegistryKey::openUserHive(L"Software\\Classes\\Luna.Script.1").setDefaultValue(L"Luna script");
+		RegistryKey::openUserHive(L"Software\\Classes\\Luna.Script.1\\shell").setDefaultValue(L"open");
+		RegistryKey::openUserHive(L"Software\\Classes\\Luna.Script.1\\shell\\open\\command").setDefaultValue(aCommand.c_str());
+		RegistryKey::openUserHive(L"Software\\Classes\\.luna").setDefaultValue(L"Luna.Script.1");
+
+		// Also update possible previous auto-registration made by Windows shell:
+		RegistryKey::openUserHive(L"Software\\Classes\\luna_auto_file\\shell\\open\\command").setDefaultValue(aCommand.c_str());
+	}
+	catch (const std::exception & exc)
+	{
+		std::cerr << "Failed to register file type association: " << exc.what() << std::endl;
+	}
+}
+
+
+
+
+
+/** Removes the new-style association of .luna files.
+This is used to replace the wrong association created by user manually, before LunaPaak handled its own associactions.
+This is called only once, automatically; the user can force-call this again using the "--fix" parameter. */
+static void removeNewStyleAssociation()
+{
+	try
+	{
+		RegistryKey::openUserHive(L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts").deleteKey(L".luna");
+		RegistryKey::openUserHive(L"Software\\Classes\\Luna.Script.1").setValue(L"HasRemovedNewStyle", L"true");
+	}
+	catch (const std::exception & exc)
+	{
+		std::cerr << "Failed to remove previous file type association: " << exc.what() << std::endl;
+	}
+}
+
+
+
+
+
+/** Removes the new-style association of .luna files, but only if it hasn't been removed before.
+This is used to replace the wrong association created by user manually, before LunaPaak handled its own associactions. */
+static void removeNewStyleAssociationOnce()
+{
+	// Query the stored flag for "only once":
+	try
+	{
+		if (RegistryKey::openUserHive(L"Software\\Classes\\Luna.Script.1").getValueString(L"", L"HasRemovedNewStyle") == L"true")
+		{
+			// Already has been removed, bail out
+			return;
+		}
+	}
+	catch (const RegistryKey::RegistryValueNotFoundException &)
+	{
+		// Not removed yet, remove now
+	}
+	catch (const std::exception & exc)
+	{
+		std::cerr << "Failed to remove previous file type association: " << exc.what() << std::endl;
+		return;
+	}
+
+	removeNewStyleAssociation();
+}
+
+
+
+
+
+/** Registers this executable to handle .luna files, through the Windows registry. */
+static void fixFileAssociations()
+{
+	wchar_t programName[2 * MAX_PATH];
+	GetModuleFileNameW(nullptr, programName, sizeof(programName) / sizeof(*programName) - 1);
+	std::wstring cmd;
+	if (programName[0] != L'"')
+	{
+		cmd.push_back(L'"');
+	}
+	cmd.append(programName);
+	if (programName[0] != L'"')
+	{
+		cmd.push_back(L'"');
+	}
+	cmd.append(L" \"%0\" %*");
+	setInterpreterOldStyleAssociation(cmd);
+	removeNewStyleAssociationOnce();
+	SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST , nullptr, nullptr);
+}
+
+
+
+
+
 int main(int argc, char * argv[])
 {
+	fixFileAssociations();
 	if (argc <= 1)
 	{
-		reportError(nullptr, "This program is a Lua code interpreter. Run it with the filename of the script to run as a parameter.");
-		return 1;
+		return 0;
+	}
+
+	if ((argc == 2) && (strcmp(argv[1], "--fix") == 0))
+	{
+		removeNewStyleAssociation();
+		SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST , nullptr, nullptr);
+		return 0;
 	}
 
 	// Create a new Lua state:

@@ -10,3 +10,5 @@ for idx, a in ipairs(arg) do
 	print(idx, ":\t", a)
 end
 print("Done")
+
+lunapaak.ui.msgbox("Received parameters", table.concat(arg, "\n"))

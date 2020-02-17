@@ -8,6 +8,17 @@ project (LunaPaak CXX)
 
 set(SRCS
 	LunaPaak.cpp
+	RegistryKey.cpp
+	StringUtils.cpp
+)
+
+
+
+
+
+set(HDRS
+	RegistryKey.h
+	StringUtils.h
 )
 
 
