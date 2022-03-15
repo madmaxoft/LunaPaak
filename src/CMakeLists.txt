@@ -10,6 +10,8 @@ set(SRCS
 	LunaPaak.cpp
 	RegistryKey.cpp
 	StringUtils.cpp
+	Ui.cpp
+	Utils.cpp
 )
 
 
@@ -19,6 +21,8 @@ set(SRCS
 set(HDRS
 	RegistryKey.h
 	StringUtils.h
+	Ui.h
+	Utils.h
 )
 
 
