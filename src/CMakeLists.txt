@@ -40,6 +40,7 @@ target_link_libraries(LunaPaak
 	lzlib
 	luasocket
 	lsqlite3
+	cjson
 )
 
 
@@ -47,6 +48,7 @@ set(TESTS
 	HelloWorld
 	Sqlite
 	Lfs
+	CJson
 )
 
 

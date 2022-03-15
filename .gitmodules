@@ -16,3 +16,6 @@
 [submodule "lib/lsqlite3"]
 	path = lib/lsqlite3
 	url = https://github.com/madmaxoft/lsqlite3
+[submodule "lib/lua-cjson"]
+	path = lib/lua-cjson
+	url = https://github.com/madmaxoft/lua-cjson

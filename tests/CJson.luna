@@ -1,0 +1,15 @@
+print("CJson test starting")
+
+local json = require("cjson")
+local safejson = require("cjson.safe")
+
+local text = json.encode({a = 1})
+print("Encoded: " .. tostring(text))
+assert(text == '{"a":1}')
+
+local value = json.decode(text)
+print("Decoded: " .. tostring(value))
+assert(type(value) == "table")
+assert(value.a == 1)
+
+print("CJson test finished")

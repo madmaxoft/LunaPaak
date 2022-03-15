@@ -19,6 +19,10 @@ extern "C"
 
 	// lsqlite3 fwd:
 	extern int luaopen_lsqlite3(lua_State * L);
+
+	// lua-cjson fwd:
+	extern int luaopen_cjson(lua_State *l);
+	extern int luaopen_cjson_safe(lua_State *l);
 }
 
 
@@ -480,6 +484,11 @@ int main(int argc, char * argv[])
 	luaL_requiref(L, "sqlite3", &luaopen_lsqlite3, false);
 	lua_pop(L, 1);
 	luaL_requiref(L, "lunapaak", &luaopen_lunapaak, true);
+	lua_pop(L, 1);
+	luaL_requiref(L, "cjson", &luaopen_cjson, false);
+	lua_pop(L, 1);
+	luaL_requiref(L, "cjson.safe", &luaopen_cjson, false);
+	luaopen_cjson_safe(L);
 	lua_settop(L, 0);  // Trim off all excess values left over by the reg functions
 
 	// Store the args to the script in a separate "arg" global:
