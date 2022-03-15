@@ -54,7 +54,7 @@ set(TESTS
 foreach(test IN LISTS TESTS)
 	add_test(
 		NAME ${test}
-		COMMAND LunaPaak tests/${test}.luna
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIRECTORY}/..
+		COMMAND LunaPaak ${test}.luna
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../tests
 	)
 endforeach()

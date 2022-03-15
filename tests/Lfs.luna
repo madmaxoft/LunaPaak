@@ -1,5 +1,6 @@
 print("LFS test starting")
 
-
+local lfs = require("lfs")
+-- TODO
 
 print("LFS test finished")

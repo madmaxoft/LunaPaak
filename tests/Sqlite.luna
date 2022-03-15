@@ -1,4 +1,4 @@
-print("test start")
+print("SQLite test start")
 local sqlite = require("sqlite3")
 
 local db = assert(sqlite.open("test.sqlite3"))
@@ -24,4 +24,4 @@ print("Values have been stored")
 
 db:close()
 
-print("test completed")
+print("SQLite test completed")
