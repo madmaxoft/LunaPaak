@@ -10,6 +10,7 @@ The package contains the following libraries:
 - lsqlite (+ sqlite)
 - lzlib (+ zlib)
 - lua-cjson
+- LuaSimpleWinHttp
 
 # About the license
 The unlicense only applies to the wrapper program; each library has its own separate license.
