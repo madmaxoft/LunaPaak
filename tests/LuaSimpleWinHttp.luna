@@ -1,0 +1,74 @@
+print("LuaSimpleWinHttp test starting")
+
+local lswh = require("LuaSimpleWinHttp")
+
+
+local function tryCustomHeaders()
+	print("Sending a GET request...")
+	local options =
+	{
+		headers =
+		{
+			"Custom-Header: blablabla",
+			"Custom2: bleble",
+		},
+	}
+	local resp, code, status, hdrs = assert(lswh.get("https://github.com", options))
+	print("code = " .. tostring(code))
+	print("status = " .. tostring(status))
+	print("hdrs:")
+	for _, hdr in ipairs(hdrs) do
+		print("  " .. hdr)
+	end
+	print("(done)")
+	print("resp(" .. type(resp) .. "): " .. tostring(resp))
+end
+
+
+
+
+
+local function tryJsonApi()
+	print("Sending a POST(JSON) request...")
+	local json = '{"title":"foo", "body":"bar", "userId":1}'
+	local resp, statusCode, _, hdrs = assert(lswh.post(
+		"https://jsonplaceholder.typicode.com/posts",
+		json,
+		"application/json; charset=UTF-8"
+	))
+	print("API resp: " .. tostring(resp))
+	print("-------")
+	print("hdrs:")
+	for _, hdr in ipairs(hdrs) do
+		print("  " .. hdr)
+	end
+	print("(done)")
+end
+
+
+
+local function tryWebDav()
+	print("Sending a PROPFIND request...")
+	local resp, code, status, hdrs = assert(lswh.request("PROPFIND", "https://www.google.com/calendar/dav", "", ""))
+	print("code = " .. tostring(code))
+	print("status = " .. tostring(status))
+	print("hdrs:")
+	for _, hdr in ipairs(hdrs) do
+		print("  " .. hdr)
+	end
+	print("(done)")
+	print("resp(" .. type(resp) .. "): " .. tostring(resp))
+end
+
+
+
+
+
+tryJsonApi()
+tryWebDav()
+tryCustomHeaders()
+
+
+
+
+print("LuaSimpleWinHttp test finished")

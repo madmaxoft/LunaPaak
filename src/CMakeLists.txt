@@ -45,6 +45,7 @@ target_link_libraries(LunaPaak
 	luasocket
 	lsqlite3
 	cjson
+	LuaSimpleWinHttp
 )
 
 
@@ -53,6 +54,7 @@ set(TESTS
 	Sqlite
 	Lfs
 	CJson
+	LuaSimpleWinHttp
 )
 
 

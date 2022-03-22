@@ -19,3 +19,9 @@
 [submodule "lib/lua-cjson"]
 	path = lib/lua-cjson
 	url = https://github.com/madmaxoft/lua-cjson
+[submodule "lib/LuaSimpleWinHttp"]
+	path = lib/LuaSimpleWinHttp
+	url = https://github.com/madmaxoft/LuaSimpleWinHttp.git
+[submodule "lib/fmt"]
+	path = lib/fmt
+	url = https://github.com/madmaxoft/fmt
