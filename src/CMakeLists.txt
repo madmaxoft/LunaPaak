@@ -38,14 +38,13 @@ add_executable(LunaPaak
 
 
 target_link_libraries(LunaPaak
-	zlibstatic
-	lua
-	luafilesystem
-	lzlib
-	luasocket
-	lsqlite3
-	cjson
-	LuaSimpleWinHttp
+	lua-static
+	luafilesystem-static
+	lzlib-static
+	luasocket-static
+	lsqlite3-static
+	cjson-static
+	LuaSimpleWinHttp-static
 )
 
 

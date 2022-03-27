@@ -38,3 +38,8 @@ add_subdirectory (lib EXCLUDE_FROM_ALL)
 enable_testing()
 
 add_subdirectory (src)
+
+
+
+# Want to build some modules as dynamic, not for this project, but for others to use:
+set_target_properties(LuaSimpleWinHttp PROPERTIES EXCLUDE_FROM_ALL false)
