@@ -43,3 +43,4 @@ add_subdirectory (src)
 
 # Want to build some modules as dynamic, not for this project, but for others to use:
 set_target_properties(LuaSimpleWinHttp PROPERTIES EXCLUDE_FROM_ALL false)
+set_target_properties(LuaSha1 PROPERTIES EXCLUDE_FROM_ALL false)

@@ -1,0 +1,36 @@
+local sha1 = require("LuaSha1")
+
+
+
+
+--- Hashes the plaintext, then compares the resulting hash with the expected hash, erroring if they differ
+local function testHashEqual(aPlainText, aExpectedHexHash)
+	assert(type(aPlainText) == "string")
+	assert(type(aExpectedHexHash) == "string")
+
+	local hash = sha1.calc(aPlainText)
+	if (hash ~= aExpectedHexHash) then
+		print("Hashing string '" .. aPlainText .. "':")
+		print("Got hash '" .. hash .. "'")
+		print("Expected '" .. aExpectedHexHash .."'")
+		error("Hashing failed")
+	end
+end
+
+testHashEqual(
+	"abc",
+	"a9993e364706816aba3e25717850c26c9cd0d89d"
+)
+
+testHashEqual(
+	"abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu",
+	"a49b2446a02c645bf419f995b67091253a04a259"
+);
+testHashEqual(
+	"The quick brown fox jumps over the lazy dog",
+	"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"
+);
+
+
+-- Test hashing multiple values:
+assert(sha1.calc("a", "b", "c") == "a9993e364706816aba3e25717850c26c9cd0d89d")

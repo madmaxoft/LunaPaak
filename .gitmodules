@@ -25,3 +25,6 @@
 [submodule "lib/fmt"]
 	path = lib/fmt
 	url = https://github.com/madmaxoft/fmt
+[submodule "lib/LuaSha1"]
+	path = lib/LuaSha1
+	url = https://github.com/madmaxoft/LuaSha1

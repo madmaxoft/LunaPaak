@@ -12,6 +12,7 @@ extern "C"
 	#include <lauxlib.h>
 	#include <lfs.h>
 	#include <LuaSimpleWinHttp.h>
+	#include <LuaSha1.h>
 	
 	// lzlib fwd:
 	extern int luaopen_zlib(lua_State *);
@@ -247,6 +248,8 @@ int main(int argc, char * argv[])
 	luaopen_cjson_safe(L);
 	lua_pop(L, 1);
 	luaopen_LuaSimpleWinHttp(L);
+	lua_pop(L, 1);
+	luaopen_LuaSha1(L);
 	lua_settop(L, 0);  // Trim off all excess values left over by the reg functions
 
 	// Store the args to the script in a separate "arg" global:

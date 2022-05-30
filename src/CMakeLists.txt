@@ -45,6 +45,7 @@ target_link_libraries(LunaPaak
 	lsqlite3-static
 	cjson-static
 	LuaSimpleWinHttp-static
+	LuaSha1-static
 )
 
 
