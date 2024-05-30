@@ -26,6 +26,9 @@ extern "C"
 	// lua-cjson fwd:
 	extern int luaopen_cjson(lua_State *l);
 	extern int luaopen_cjson_safe(lua_State *l);
+
+	// luaexpat fwd:
+	extern int luaopen_lxp(lua_State * L);
 }
 
 
@@ -250,6 +253,8 @@ int main(int argc, char * argv[])
 	luaopen_LuaSimpleWinHttp(L);
 	lua_pop(L, 1);
 	luaopen_LuaSha1(L);
+	lua_pop(L, 1);
+	luaL_requiref(L, "lxp", &luaopen_lxp, true);
 	lua_settop(L, 0);  // Trim off all excess values left over by the reg functions
 
 	// Store the args to the script in a separate "arg" global:

@@ -46,6 +46,7 @@ target_link_libraries(LunaPaak
 	cjson-static
 	LuaSimpleWinHttp-static
 	LuaSha1-static
+	luaexpat-static
 )
 
 
@@ -55,6 +56,7 @@ set(TESTS
 	Lfs
 	CJson
 	LuaSimpleWinHttp
+	LuaExpat
 )
 
 

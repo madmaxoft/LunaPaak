@@ -1,0 +1,17 @@
+print("LuaExpat test starting")
+
+local lxp = require("lxp")
+
+local callbacks =
+{
+	StartElement = function(aParser, aElementName, aAttributes)
+		print("Start element: " .. aElementName)
+	end,
+	EndElement = function(aParser, aElementName)
+		print("End element: " .. aElementName)
+	end,
+}
+local parser = lxp.new(callbacks)
+parser:parse("<a><b><c d=\"e\" /></b></a>")
+
+print("LuaExpat test finished")

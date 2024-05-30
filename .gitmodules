@@ -28,3 +28,9 @@
 [submodule "lib/LuaSha1"]
 	path = lib/LuaSha1
 	url = https://github.com/madmaxoft/LuaSha1
+[submodule "lib/expat"]
+	path = lib/expat
+	url = https://github.com/madmaxoft/expat
+[submodule "lib/luaexpat"]
+	path = lib/luaexpat
+	url = https://github.com/madmaxoft/luaexpat
